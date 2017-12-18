@@ -20,8 +20,10 @@ public class Server {
     public struct Address {
         public let ip: String
         public let port: Int
+        public let user: String
 
-        public init(ip: String, port: Int) {
+        public init(user: String, ip: String, port: Int) {
+            self.user = user
             self.ip = ip
             self.port = port
         }
@@ -52,7 +54,7 @@ public class Server {
         do {
             session = try SSH.Session(host: address.ip, port: Int32(address.port))
             session.ptyType = .vanilla
-            try session.authenticate(username: user, authMethod: auth)
+            try session.authenticate(username: address.user, authMethod: auth)
         } catch let error {
             print("Error: ".red + "Couldn't connect to \(user)@\(address) (\(error))")
             exit(1)
@@ -65,7 +67,11 @@ public class Server {
     }
 
     public convenience init(ip: String, user: String, roles: [Role], authMethod: SSH.AuthMethod?) {
-        self.init(address: Address(ip: ip, port: 22), user: user, roles: roles, authMethod: authMethod)
+        self.init(address: Address(user: user, ip: ip, port: 22), user: user, roles: roles, authMethod: authMethod)
+    }
+
+    public convenience init(ip: String, user: String, port: Int, roles: [Role], authMethod: SSH.AuthMethod?) {
+        self.init(address: Address(user: user, ip: ip, port: port), user: user, roles: roles, authMethod: authMethod)
     }
     
     // MARK: - Command helpers
