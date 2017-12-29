@@ -169,7 +169,7 @@ public class Server {
 extension Server: CustomStringConvertible {
     
     public var description: String {
-        return "\(user)@\(address)"
+        return "\(address.user)@\(address)"
     }
     
 }
